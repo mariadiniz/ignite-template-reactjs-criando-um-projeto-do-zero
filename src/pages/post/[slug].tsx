@@ -19,6 +19,7 @@ import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -32,13 +33,20 @@ interface Post {
       }[];
     }[];
   };
+  uid?: string;
 }
 
 interface PostProps {
   post: Post;
+  nextPost: Post;
+  prevPost: Post;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  nextPost,
+  prevPost,
+}: PostProps): JSX.Element {
   const totalWords = post.data.content.reduce((total, contentItem) => {
     if (!contentItem.heading) {
       return;
@@ -53,6 +61,13 @@ export default function Post({ post }: PostProps): JSX.Element {
 
   const formattedPostDate = (date: string): string => {
     const formattedDate = format(new Date(date), 'dd MMM yyyy', {
+      locale: ptBR,
+    });
+    return formattedDate;
+  };
+
+  const formattedLastDate = (date: string): string => {
+    const formattedDate = format(new Date(date), "'editado em' dd MMM yyyy", {
       locale: ptBR,
     });
     return formattedDate;
@@ -95,6 +110,8 @@ export default function Post({ post }: PostProps): JSX.Element {
               </span>
             </div>
 
+            <p>{formattedLastDate(post.last_publication_date)}</p>
+
             <div className={styles.content}>
               {post.data.content.map(content => {
                 return (
@@ -109,6 +126,29 @@ export default function Post({ post }: PostProps): JSX.Element {
                 );
               })}
             </div>
+
+            {prevPost && (
+              <div>
+                <p>Post anterior</p>
+                <a href={`/post/${prevPost.uid}`}>{prevPost.data.title}</a>
+              </div>
+            )}
+
+            {nextPost && (
+              <div>
+                <p>Próximo post</p>
+                <a href={`/post/${nextPost.uid}`}>{nextPost.data.title}</a>
+              </div>
+            )}
+
+            <script
+              src="https://utteranc.es/client.js"
+              repo="mariadiniz/ignite-utterance"
+              issue-term="pathname"
+              theme="photon-dark"
+              crossOrigin="anonymous"
+              async
+            />
           </div>
         </article>
       </main>
@@ -161,7 +201,30 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 
+  const nextResponse = await prismic.query(
+    Prismic.Predicates.at('document.type', 'post'),
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date desc]',
+    }
+  );
+
+  const prevResponse = await prismic.query(
+    Prismic.Predicates.at('document.type', 'post'),
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]',
+    }
+  );
+
+  const nextPost = nextResponse?.results[0] || null;
+  const prevPost = prevResponse?.results[0] || null;
+
+  console.log({ nextPost, prevPost });
+
   return {
-    props: { post },
+    props: { post, nextPost, prevPost },
   };
 };

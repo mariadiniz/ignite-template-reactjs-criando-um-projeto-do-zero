@@ -4,11 +4,10 @@ import Prismic from '@prismicio/client';
 
 import Head from 'next/head';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import format from 'date-fns/format';
 import { ptBR } from 'date-fns/locale';
-import { useRouter } from 'next/router';
 import styles from './home.module.scss';
 import Header from '../components/Header';
 import commonStyles from '../styles/common.module.scss';
@@ -113,9 +112,9 @@ const Home: React.FC<HomeProps> = ({ postsPagination }) => {
 export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
   const postsResponse = await prismic.query(
-    [Prismic.predicates.at('document.type', 'posts')],
+    [Prismic.predicates.at('document.type', 'post')],
     {
-      fetch: ['posts.title', 'posts.subtitle', 'posts.author', 'posts.content'],
+      fetch: ['post.title', 'post.subtitle', 'post.author', 'post.content'],
       pageSize: 2,
     }
   );

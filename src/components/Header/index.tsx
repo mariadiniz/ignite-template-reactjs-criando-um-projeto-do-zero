@@ -1,15 +1,13 @@
 import Link from 'next/link';
+import { ReactElement } from 'react';
 import styles from './header.module.scss';
 
-export default function Header() {
+export default function Header(): ReactElement {
   return (
     <>
       <div className={styles.headerContainer}>
-        <Link href="">
-          <div className={styles.imageContainer}>
-            <img src="/images/logo.png" alt="logo" />
-            SpaceTravelling
-          </div>
+        <Link href="/">
+          <img src="/images/logo.svg" alt="logo" />
         </Link>
       </div>
     </>

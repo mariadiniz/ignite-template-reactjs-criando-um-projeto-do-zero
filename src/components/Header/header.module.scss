@@ -1,22 +1,13 @@
-// TODO
 .headerContainer {
   width: 100%;
+  max-width: 700px;
+  margin: auto;
   display: flex;
   align-items: center;
-  margin-bottom: 64px;
-  padding: 0 20%;
+  height: 10rem;
 
-  h1 {
-    margin-left: 16px;
-    font-size: 23.63px;
-  }
-
-  .imageContainer {
-    width: 40px;
-    height: 23px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  img {
+    margin-right: auto;
     cursor: pointer;
   }
 }

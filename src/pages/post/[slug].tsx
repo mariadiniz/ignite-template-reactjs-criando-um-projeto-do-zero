@@ -75,7 +75,7 @@ export default function Post({ post }: PostProps): JSX.Element {
       <main className={styles.postContainer}>
         <article className={styles.post}>
           <img
-            className={styles.banner}
+            className={styles.bannerContainer}
             src={post.data.banner.url}
             alt={post.data.title}
           />
@@ -119,8 +119,8 @@ export default function Post({ post }: PostProps): JSX.Element {
 export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient();
   const posts = await prismic.query(
-    Prismic.predicates.at('document.type', 'posts'),
-    { fetch: ['posts.uid'], pageSize: 3 }
+    Prismic.predicates.at('document.type', 'post'),
+    { fetch: ['post.uid'], pageSize: 3 }
   );
 
   return {
@@ -139,7 +139,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID('posts', String(slug), {});
+  const response = await prismic.getByUID('post', String(slug), {});
 
   const post = {
     uid: response.uid,
